@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2D4E528626119D4E0046C10F /* FlickrApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4E528526119D4E0046C10F /* FlickrApi.swift */; };
+		2DC076B6261448F40000A5BD /* PhotoAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC076B5261448F40000A5BD /* PhotoAlbumViewController.swift */; };
 		2DDF6E91260F0C4B001B5514 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDF6E90260F0C4B001B5514 /* AppDelegate.swift */; };
 		2DDF6E93260F0C4B001B5514 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDF6E92260F0C4B001B5514 /* SceneDelegate.swift */; };
 		2DDF6E95260F0C4B001B5514 /* TravelMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDF6E94260F0C4B001B5514 /* TravelMapViewController.swift */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		2D4E528526119D4E0046C10F /* FlickrApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrApi.swift; sourceTree = "<group>"; };
+		2DC076B5261448F40000A5BD /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbumViewController.swift; sourceTree = "<group>"; };
 		2DDF6E8D260F0C4B001B5514 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2DDF6E90260F0C4B001B5514 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2DDF6E92260F0C4B001B5514 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -45,6 +47,7 @@
 			isa = PBXGroup;
 			children = (
 				2DDF6E94260F0C4B001B5514 /* TravelMapViewController.swift */,
+				2DC076B5261448F40000A5BD /* PhotoAlbumViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -172,6 +175,7 @@
 				2DDF6E91260F0C4B001B5514 /* AppDelegate.swift in Sources */,
 				2DDF6E93260F0C4B001B5514 /* SceneDelegate.swift in Sources */,
 				2D4E528626119D4E0046C10F /* FlickrApi.swift in Sources */,
+				2DC076B6261448F40000A5BD /* PhotoAlbumViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
