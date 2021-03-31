@@ -7,6 +7,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class TravelMapViewController: UIViewController, MKMapViewDelegate {
     
@@ -14,8 +15,45 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapView.delegate = self
         // Do any additional setup after loading the view.
     }
+    
+    /*
+     func drawMap() {
+        
+        // We will create an MKPointAnnotation for each dictionary in "locations". The
+        // point annotations will be stored in this array, and then provided to the map view.
+        var annotations = [MKPointAnnotation]()
+        
+        for i in 0..<OnTheMapModel.studentInformation.count
+
+        {
+                    let lat = CLLocationDegrees(OnTheMapModel.studentInformation[i].latitude as! Double)
+                    let long = CLLocationDegrees(OnTheMapModel.studentInformation[i].longitude as! Double)
+                    
+                    // The lat and long are used to create a CLLocationCoordinates2D instance.
+                    let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+                    
+                    let first = OnTheMapModel.studentInformation[i].firstName as! String
+                    let last = OnTheMapModel.studentInformation[i].lastName as! String
+                    let mediaURL = OnTheMapModel.studentInformation[i].mediaURL as! String
+        
+                    // Here we create the annotation and set its coordiate, title, and subtitle properties
+                    let annotation = MKPointAnnotation()
+                    annotation.coordinate = coordinate
+                    annotation.title = "\(first) \(last)"
+                    annotation.subtitle = mediaURL
+                    
+                    // Finally we place the annotation in an array of annotations.
+                    annotations.append(annotation)
+                }
+                
+                // When the array is complete, we add the annotations to the map.
+                self.mapView.addAnnotations(annotations)
+                
+        }
+    */
     
     /*
      // MARK: - MKMapViewDelegate
