@@ -6,16 +6,14 @@
 //
 
 import Foundation
-class photosSearchResponse {
     
-    struct photosSearchResponse: Codable {
-        let photos: searchPhotos
-        let photo: [searchPhoto]
+struct photosSearchResponse: Codable {
+    let photos: searchPhotos
+    let photo: [searchPhoto]
         
-        
-        enum CodingKeys: String, CodingKey {
-            case photos
-            case photo
-        }
+    enum CodingKeys: String, CodingKey {
+        case photos
+        case photo
     }
 }
+

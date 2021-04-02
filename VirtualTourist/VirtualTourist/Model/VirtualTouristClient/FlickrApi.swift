@@ -74,14 +74,14 @@ class FlickrAPI {
    
     let url = Endpoints.searchPhotos(String(latitude), String(longitude), String(page)).url
     taskForGETRequest(url: url, response: photosSearchResponse.self) { (response, error) in
-               if let response = response {
-                VirtualTouristModel = response
-                completion(true,nil)
-               }
-               else {
-                completion(false,error)
-               }
-           }
+        if let response = response {
+           //VirtualTouristModel = response
+           completion(true,nil)
+        }
+        else {
+          completion(false,error)
+        }
+    }
 }
 
 
