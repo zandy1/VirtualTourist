@@ -16,12 +16,14 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     @IBOutlet var mapView: MKMapView!
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var flowLayout: UICollectionViewFlowLayout!
+    @IBOutlet weak var myNavigationItem: UINavigationItem!
     
     //let appDelegate = UIApplication.shared.delegate as! AppDelegate
     //var memes = [Meme]()
     
     override func viewDidLoad() {
           super.viewDidLoad()
+          self.myNavigationItem.leftBarButtonItem = UIBarButtonItem(title: "< OK", style: .done, target: self, action: #selector(ok))
           toDoWhenInView()
           mapView.delegate = self
           collectionView.dataSource = self
@@ -38,11 +40,19 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
           flowLayout.itemSize = CGSize(width: dimension, height: height)
     }
     
+    @objc func ok() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     func toDoWhenInView() {
            //memes = appDelegate.memes
            collectionView.reloadData()
            //self.navigationController?.navigationBar.isHidden = false
            //self.tabBarController?.tabBar.isHidden = false
+    }
+    
+    @IBAction func newCollectionTapped(_ sender: UIButton) {
+    
        }
 
     /*

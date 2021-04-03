@@ -46,11 +46,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cgS-gK-GoT">
+                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                                <items>
+                                    <navigationItem id="EHk-Tm-zjn"/>
+                                </items>
+                            </navigationBar>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Dcc-gU-0VT">
-                                <rect key="frame" x="-16" y="44" width="414" height="151"/>
+                                <rect key="frame" x="-16" y="88" width="414" height="778"/>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="qCg-Aa-Xu3">
-                                <rect key="frame" x="-16" y="203" width="414" height="669"/>
+                                <rect key="frame" x="-16" y="88" width="414" height="808"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="c7b-ZM-3M0">
                                     <size key="itemSize" width="128" height="128"/>
@@ -78,23 +84,35 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ndi-Ix-0dc">
+                                <rect key="frame" x="155" y="866" width="104" height="30"/>
+                                <state key="normal" title="New Collection"/>
+                                <connections>
+                                    <action selector="newCollectionTapped:" destination="efl-Cf-MdN" eventType="touchUpInside" id="xhX-oC-yoW"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="NTb-jP-0UX"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="qCg-Aa-Xu3" firstAttribute="trailing" secondItem="NTb-jP-0UX" secondAttribute="trailing" constant="-16" id="0x8-s4-DQH"/>
+                            <constraint firstItem="NTb-jP-0UX" firstAttribute="leading" secondItem="cgS-gK-GoT" secondAttribute="leading" id="2sY-s9-sJ8"/>
                             <constraint firstItem="qCg-Aa-Xu3" firstAttribute="leading" secondItem="NTb-jP-0UX" secondAttribute="leading" constant="-16" id="44Q-kR-6qH"/>
+                            <constraint firstAttribute="bottom" secondItem="ndi-Ix-0dc" secondAttribute="bottom" id="6AS-qV-TYu"/>
+                            <constraint firstItem="cgS-gK-GoT" firstAttribute="trailing" secondItem="NTb-jP-0UX" secondAttribute="trailing" id="C8I-aI-3hG"/>
                             <constraint firstItem="Dcc-gU-0VT" firstAttribute="leading" secondItem="NTb-jP-0UX" secondAttribute="leading" constant="-16" id="X7r-dB-yea"/>
-                            <constraint firstAttribute="bottom" secondItem="qCg-Aa-Xu3" secondAttribute="bottom" id="cTk-tZ-bis"/>
                             <constraint firstItem="qCg-Aa-Xu3" firstAttribute="top" secondItem="Dcc-gU-0VT" secondAttribute="bottom" id="hHf-Ms-074"/>
-                            <constraint firstItem="Dcc-gU-0VT" firstAttribute="top" secondItem="NTb-jP-0UX" secondAttribute="top" id="q3P-gq-slV"/>
+                            <constraint firstItem="cgS-gK-GoT" firstAttribute="top" secondItem="NTb-jP-0UX" secondAttribute="top" id="kEu-gw-aWH"/>
                             <constraint firstItem="Dcc-gU-0VT" firstAttribute="trailing" secondItem="NTb-jP-0UX" secondAttribute="trailing" constant="-16" id="vV1-4p-wMa"/>
+                            <constraint firstItem="ndi-Ix-0dc" firstAttribute="top" secondItem="qCg-Aa-Xu3" secondAttribute="bottom" id="yq9-KJ-Bng"/>
+                            <constraint firstItem="Dcc-gU-0VT" firstAttribute="top" secondItem="cgS-gK-GoT" secondAttribute="bottom" id="zyi-WD-cEA"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="qCg-Aa-Xu3" id="HvV-m0-fLm"/>
                         <outlet property="flowLayout" destination="c7b-ZM-3M0" id="wH5-hw-GRV"/>
                         <outlet property="mapView" destination="Dcc-gU-0VT" id="oA6-M7-a5S"/>
+                        <outlet property="myNavigationItem" destination="EHk-Tm-zjn" id="VeF-is-faQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Z8-Ri-iNZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
