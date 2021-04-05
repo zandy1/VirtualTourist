@@ -51,6 +51,7 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
         if UserDefaults.standard.bool(forKey: "CenterSaved") {
             restoreView()
         }
+        drawMap()
     }
     
     @objc func handleTap(gestureRecognizer: UILongPressGestureRecognizer) {
@@ -83,39 +84,35 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
         mapView.cameraZoomRange = MKMapView.CameraZoomRange(minCenterCoordinateDistance: min, maxCenterCoordinateDistance: max)
     }
     
-    /*
-     func drawMap() {
-        
-        // We will create an MKPointAnnotation for each dictionary in "locations". The
-        // point annotations will be stored in this array, and then provided to the map view.
-        var annotations = [MKPointAnnotation]()
-        let count = fetchedResultsController.sections?[0].numberOfObjects ?? 0
-        
-        for i in 0..<count
 
-        {
-                    let aPin = fetchedResultsController.object(at: )
-                    let lat = CLLocationDegrees(aPin.latitude)
-                    let long = CLLocationDegrees(aPin.longitude)
-                    
-                    // The lat and long are used to create a CLLocationCoordinates2D instance.
-                    let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
-                    
-        
-                    // Here we create the annotation and set its coordiate, title, and subtitle properties
-                    let annotation = MKPointAnnotation()
-                    annotation.coordinate = coordinate
-                    
-                    // Finally we place the annotation in an array of annotations.
-                    annotations.append(annotation)
+    func drawMap() {
+        var annotations = [MKPointAnnotation]()
+     
+        let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
+        do {
+            let fetchedResults = try? dataController.viewContext.fetch(fetchRequest)
+            for item in fetchedResults! {
+     
+               let lat = CLLocationDegrees(item.latitude)
+               let long = CLLocationDegrees(item.longitude)
+               print(lat, long)
+     
+               // The lat and long are used to create a CLLocationCoordinates2D instance.
+               let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+
+               // Here we create the annotation and set its coordiate, title, and subtitle properties
+               let annotation = MKPointAnnotation()
+               annotation.coordinate = coordinate
+     
+               // Finally we place the annotation in an array of annotations.
+               annotations.append(annotation)
                 }
-                
-                // When the array is complete, we add the annotations to the map.
-                self.mapView.addAnnotations(annotations)
-                
+           self.mapView.addAnnotations(annotations)
+        } catch let error as NSError {
+            // something went wrong, print the error.
+            print(error.description)
         }
-    */
-    
+    }
     
      // MARK: - MKMapViewDelegate
 
@@ -168,6 +165,14 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
         UserDefaults.standard.set(true, forKey: "CenterSaved")
         print("Region Changed")
     }
+    
+    // Remove Old Pins
+    func clear_pins() {
+      for _annotation in self.mapView.annotations {
+         self.mapView.removeAnnotation(_annotation)
+      }
+    }
+    
 }
 
 extension TravelMapViewController:NSFetchedResultsControllerDelegate {
