@@ -18,8 +18,28 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     @IBOutlet var flowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var myNavigationItem: UINavigationItem!
     
-    //let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    //var memes = [Meme]()
+    var pin: Pin!
+    
+    var dataController:DataController!
+    
+    var fetchedResultsController:NSFetchedResultsController<Photo>!
+    
+    fileprivate func setupFetchedResultsController() {
+        let fetchRequest:NSFetchRequest<Photo> = Photo.fetchRequest()
+        let predicate = NSPredicate(format: "pin == %@", pin)
+        fetchRequest.predicate = predicate
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "\(pin)-photos")
+        fetchedResultsController.delegate = self
+
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
+    }
     
     override func viewDidLoad() {
           super.viewDidLoad()
@@ -38,6 +58,17 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
           flowLayout.minimumInteritemSpacing = space
           flowLayout.minimumLineSpacing = space
           flowLayout.itemSize = CGSize(width: dimension, height: height)
+          setupFetchedResultsController()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupFetchedResultsController()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        fetchedResultsController = nil
     }
     
     @objc func ok() {
@@ -121,5 +152,9 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
             
         }
 
+    
+}
+
+extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate {
     
 }
