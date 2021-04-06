@@ -67,6 +67,10 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
           setupFetchedResultsController()
           drawMap()
           toDoWhenInView()
+        if (pin.photo?.count == 0) {
+            print("Pin Contains No Photos")
+            getFlickrImages(page: 1)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -104,6 +108,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
          numPages = response!.photos.pages
          imagesPerPage = Int(response!.photos.perpage)
          imagesAvailable = Int(response!.photos.total)
+         print(currentPage, numPages, imagesPerPage, imagesAvailable)
          if (imagesAvailable > 0) {
             for image in response!.photo {
                 //addPhoto(urlString: image.computeURL())

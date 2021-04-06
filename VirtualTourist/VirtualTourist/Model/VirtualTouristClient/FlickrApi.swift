@@ -14,7 +14,7 @@ class FlickrAPI {
     static let base = "https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key="
     static let trailer = "&format=json&nojsoncallback=1"
     static let key = "5635d9d448af681d854123142d8acc7d"
-    static let secret = "7b0eca14ea31e4ed"
+    //static let secret = "7b0eca14ea31e4ed"
     
     enum Endpoints {
 
@@ -44,6 +44,8 @@ class FlickrAPI {
                    }
                    return
                }
+            print(url)
+            print(String(data: data, encoding: .utf8))
                let decoder = JSONDecoder()
                do {
                 let responseObject = try decoder.decode(ResponseType.self, from: data)
@@ -78,7 +80,7 @@ class FlickrAPI {
            completion(response,nil)
         }
         else {
-          completion(nil,error)
+           completion(nil,error)
         }
     }
 }
