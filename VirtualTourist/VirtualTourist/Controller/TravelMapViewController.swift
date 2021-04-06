@@ -22,6 +22,10 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
     
     var day: Int!
     
+    var pins = [Pin]()
+    
+    var selectedPin: Pin!
+    
     fileprivate func setupFetchedResultsController() {
         let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
         let sortDescriptor = NSSortDescriptor(key: "latitude", ascending: false)
@@ -91,28 +95,29 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
         let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
         do {
             let fetchedResults = try? dataController.viewContext.fetch(fetchRequest)
+            self.pins = fetchedResults!
             for item in fetchedResults! {
-     
-               let lat = CLLocationDegrees(item.latitude)
-               let long = CLLocationDegrees(item.longitude)
-               print(lat, long)
-     
-               // The lat and long are used to create a CLLocationCoordinates2D instance.
-               let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+                
+                let lat = CLLocationDegrees(item.latitude)
+                let long = CLLocationDegrees(item.longitude)
+                //print(lat, long)
+                     
+                // The lat and long are used to create a CLLocationCoordinates2D instance.
+                let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
 
-               // Here we create the annotation and set its coordiate, title, and subtitle properties
-               let annotation = MKPointAnnotation()
-               annotation.coordinate = coordinate
-     
-               // Finally we place the annotation in an array of annotations.
-               annotations.append(annotation)
+                // Here we create the annotation and set its coordiate, title, and subtitle properties
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = coordinate
+                     
+                // Finally we place the annotation in an array of annotations.
+                annotations.append(annotation)
                 }
-           self.mapView.addAnnotations(annotations)
-        } catch let error as NSError {
-            // something went wrong, print the error.
-            print(error.description)
+            self.mapView.addAnnotations(annotations)
+            } catch let error as NSError {
+                // something went wrong, print the error.
+                print(error.description)
+              }
         }
-    }
     
      // MARK: - MKMapViewDelegate
 
@@ -138,24 +143,19 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
          return pinView
      }
 
-     
-     // This delegate method is implemented to respond to taps. It opens the system browser
-     // to the URL specified in the annotationViews subtitle property.
-     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-         if control == view.rightCalloutAccessoryView {
-             print("Pin Tapped")
-             //let app = UIApplication.shared
-             //if let toOpen = view.annotation?.subtitle! {
-                 //app.openURL(URL(string: toOpen)!)
-             //}
-         }
-     }
-    
-    func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!)
-    {
-        print("Pin Clicked")
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView){
+        let coordinate = view.annotation?.coordinate
+        let lat = coordinate?.latitude
+        let long = coordinate?.longitude
+        for pin in pins {
+            if pin.latitude == lat && pin.longitude == long {
+             selectedPin = pin
+             //print(selectedPin.latitude, selectedPin.longitude)
+            }
+        }
+        self.performSegue(withIdentifier: "photoAlbum", sender: nil)
     }
-
+    
     func mapView(_ mapView: MKMapView,
                  regionDidChangeAnimated animated: Bool) {
         UserDefaults.standard.set(mapView.centerCoordinate.latitude, forKey: "CenterLatitude")
@@ -163,7 +163,6 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
         UserDefaults.standard.set(mapView.cameraZoomRange.maxCenterCoordinateDistance, forKey: "CenterMax")
         UserDefaults.standard.set(mapView.cameraZoomRange.minCenterCoordinateDistance, forKey: "CenterMin")
         UserDefaults.standard.set(true, forKey: "CenterSaved")
-        print("Region Changed")
     }
     
     // Remove Old Pins
@@ -172,7 +171,15 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
          self.mapView.removeAnnotation(_annotation)
       }
     }
-    
+        
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+         // If this is a PhotoAlbumViewController, we'll configure its `Pin`
+         if let vc = segue.destination as? PhotoAlbumViewController {
+             vc.pin = selectedPin
+             vc.dataController = dataController
+         }
+     }
+     
 }
 
 extension TravelMapViewController:NSFetchedResultsControllerDelegate {

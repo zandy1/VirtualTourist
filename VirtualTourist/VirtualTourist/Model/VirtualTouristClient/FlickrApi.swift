@@ -70,16 +70,15 @@ class FlickrAPI {
     
  
     
- class func searchPhotos(latitude: Double, longitude: Double, page: Int, completion: @escaping (Bool, Error?) -> Void) {
+ class func searchPhotos(latitude: Double, longitude: Double, page: Int, completion: @escaping (photosSearchResponse?, Error?) -> Void) {
    
     let url = Endpoints.searchPhotos(String(latitude), String(longitude), String(page)).url
     taskForGETRequest(url: url, response: photosSearchResponse.self) { (response, error) in
         if let response = response {
-           //VirtualTouristModel = response
-           completion(true,nil)
+           completion(response,nil)
         }
         else {
-          completion(false,error)
+          completion(nil,error)
         }
     }
 }

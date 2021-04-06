@@ -32,6 +32,7 @@
                     </view>
                     <connections>
                         <outlet property="mapView" destination="Uzg-UE-e9X" id="OcI-ra-hs9"/>
+                        <segue destination="efl-Cf-MdN" kind="presentation" identifier="photoAlbum" modalPresentationStyle="fullScreen" id="Yxp-Z7-8Vu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -53,7 +54,7 @@
                                 </items>
                             </navigationBar>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Dcc-gU-0VT">
-                                <rect key="frame" x="-16" y="88" width="414" height="778"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="778"/>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="qCg-Aa-Xu3">
                                 <rect key="frame" x="-16" y="88" width="414" height="808"/>
@@ -65,7 +66,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoAlbumViewCollectionViewCell" id="DWI-4x-Cg6" customClass="PhotoAlbumCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoAlbumCollectionViewCell" id="DWI-4x-Cg6" customClass="PhotoAlbumCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="M08-55-0g2">
@@ -84,8 +85,8 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ndi-Ix-0dc">
-                                <rect key="frame" x="155" y="866" width="104" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ndi-Ix-0dc">
+                                <rect key="frame" x="155" y="850" width="104" height="30"/>
                                 <state key="normal" title="New Collection"/>
                                 <connections>
                                     <action selector="newCollectionTapped:" destination="efl-Cf-MdN" eventType="touchUpInside" id="xhX-oC-yoW"/>
@@ -97,13 +98,14 @@
                         <constraints>
                             <constraint firstItem="qCg-Aa-Xu3" firstAttribute="trailing" secondItem="NTb-jP-0UX" secondAttribute="trailing" constant="-16" id="0x8-s4-DQH"/>
                             <constraint firstItem="NTb-jP-0UX" firstAttribute="leading" secondItem="cgS-gK-GoT" secondAttribute="leading" id="2sY-s9-sJ8"/>
+                            <constraint firstItem="ndi-Ix-0dc" firstAttribute="centerX" secondItem="NTb-jP-0UX" secondAttribute="centerX" id="3rv-gj-vxN"/>
                             <constraint firstItem="qCg-Aa-Xu3" firstAttribute="leading" secondItem="NTb-jP-0UX" secondAttribute="leading" constant="-16" id="44Q-kR-6qH"/>
-                            <constraint firstAttribute="bottom" secondItem="ndi-Ix-0dc" secondAttribute="bottom" id="6AS-qV-TYu"/>
+                            <constraint firstItem="ndi-Ix-0dc" firstAttribute="bottom" secondItem="AWM-OG-hOA" secondAttribute="bottom" constant="-16" id="6AS-qV-TYu"/>
                             <constraint firstItem="cgS-gK-GoT" firstAttribute="trailing" secondItem="NTb-jP-0UX" secondAttribute="trailing" id="C8I-aI-3hG"/>
-                            <constraint firstItem="Dcc-gU-0VT" firstAttribute="leading" secondItem="NTb-jP-0UX" secondAttribute="leading" constant="-16" id="X7r-dB-yea"/>
+                            <constraint firstItem="Dcc-gU-0VT" firstAttribute="leading" secondItem="NTb-jP-0UX" secondAttribute="leading" id="X7r-dB-yea"/>
                             <constraint firstItem="qCg-Aa-Xu3" firstAttribute="top" secondItem="Dcc-gU-0VT" secondAttribute="bottom" id="hHf-Ms-074"/>
                             <constraint firstItem="cgS-gK-GoT" firstAttribute="top" secondItem="NTb-jP-0UX" secondAttribute="top" id="kEu-gw-aWH"/>
-                            <constraint firstItem="Dcc-gU-0VT" firstAttribute="trailing" secondItem="NTb-jP-0UX" secondAttribute="trailing" constant="-16" id="vV1-4p-wMa"/>
+                            <constraint firstItem="Dcc-gU-0VT" firstAttribute="trailing" secondItem="NTb-jP-0UX" secondAttribute="trailing" id="vV1-4p-wMa"/>
                             <constraint firstItem="ndi-Ix-0dc" firstAttribute="top" secondItem="qCg-Aa-Xu3" secondAttribute="bottom" id="yq9-KJ-Bng"/>
                             <constraint firstItem="Dcc-gU-0VT" firstAttribute="top" secondItem="cgS-gK-GoT" secondAttribute="bottom" id="zyi-WD-cEA"/>
                         </constraints>
@@ -113,6 +115,7 @@
                         <outlet property="flowLayout" destination="c7b-ZM-3M0" id="wH5-hw-GRV"/>
                         <outlet property="mapView" destination="Dcc-gU-0VT" id="oA6-M7-a5S"/>
                         <outlet property="myNavigationItem" destination="EHk-Tm-zjn" id="VeF-is-faQ"/>
+                        <outlet property="newCollectionButton" destination="ndi-Ix-0dc" id="Rch-tC-l0d"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Z8-Ri-iNZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
