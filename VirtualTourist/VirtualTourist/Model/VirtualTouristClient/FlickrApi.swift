@@ -10,7 +10,6 @@ import UIKit
 
 class FlickrAPI {
     
-    //static let base = "https://www.flickr.com/services/rest/"
     static let base = "https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key="
     static let trailer = "&format=json&nojsoncallback=1"
     static let key = "5635d9d448af681d854123142d8acc7d"
@@ -32,7 +31,7 @@ class FlickrAPI {
       }
     }
 
-/*
+/* Format of flickr.photos.search URL
  https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=5635d9d448af681d854123142d8acc7d&lat=37.7749&lon=122.4194&page=1&format=json&nojsoncallback=1
  */
     
@@ -44,13 +43,13 @@ class FlickrAPI {
                    }
                    return
                }
-            print(url)
-            print(String(data: data, encoding: .utf8))
-               let decoder = JSONDecoder()
+            //print(url)
+            //print(String(data: data, encoding: .utf8))
+            let decoder = JSONDecoder()
                do {
                 let responseObject = try decoder.decode(ResponseType.self, from: data)
                    DispatchQueue.main.async {
-                     completion(responseObject, nil)
+                    completion(responseObject, nil)
                    }
                } catch {
                    do {
@@ -70,8 +69,6 @@ class FlickrAPI {
            return task
        }
     
- 
-    
  class func searchPhotos(latitude: Double, longitude: Double, page: Int, completion: @escaping (photosSearchResponse?, Error?) -> Void) {
    
     let url = Endpoints.searchPhotos(String(latitude), String(longitude), String(page)).url
@@ -83,8 +80,7 @@ class FlickrAPI {
            completion(nil,error)
         }
     }
-}
-
+  }
 
 }
 

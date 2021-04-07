@@ -9,12 +9,10 @@ import Foundation
     
 struct photosSearchResponse: Codable {
     let photos: searchPhotos
-    let photo: [searchPhoto]
     let stat: String
         
     enum CodingKeys: String, CodingKey {
         case photos
-        case photo
         case stat
     }
 }

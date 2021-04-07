@@ -10,13 +10,15 @@ import Foundation
 struct searchPhotos: Codable {
     let page: Int
     let pages: Int
-    let perpage: String
+    let perpage: Int
     let total: String
+    let photo: [searchPhoto]
     
     enum CodingKeys: String, CodingKey {
         case page
         case pages
         case perpage
         case total
+        case photo
     }
 }

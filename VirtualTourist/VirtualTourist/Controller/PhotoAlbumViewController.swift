@@ -67,10 +67,10 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
           setupFetchedResultsController()
           drawMap()
           toDoWhenInView()
-        if (pin.photo?.count == 0) {
-            print("Pin Contains No Photos")
-            getFlickrImages(page: 1)
-        }
+          if (pin.photo?.count == 0) {
+              print("Pin Contains No Photos")
+              getFlickrImages(page: 1)
+          }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -88,7 +88,6 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     }
     
     func toDoWhenInView() {
-           //memes = appDelegate.memes
            collectionView.reloadData()
            self.navigationController?.navigationBar.isHidden = false
     }
@@ -106,13 +105,14 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
        if (response != nil) {
          currentPage = response!.photos.page
          numPages = response!.photos.pages
-         imagesPerPage = Int(response!.photos.perpage)
+         imagesPerPage = response!.photos.perpage
          imagesAvailable = Int(response!.photos.total)
-         print(currentPage, numPages, imagesPerPage, imagesAvailable)
          if (imagesAvailable > 0) {
-            for image in response!.photo {
-                //addPhoto(urlString: image.computeURL())
+            downloadImages()
+            for image in response!.photos.photo {
+                addPhoto(urlString: image.computeURL())
             }
+            disableNewCollectionButton(isDisabled: false)
          }
        }
        else {
@@ -122,8 +122,9 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     
     
     @IBAction func newCollectionTapped(_ sender: UIButton) {
-    
-       }
+        let randPage = Int.random(in: 1..<(numPages+1))
+        getFlickrImages(page: randPage)
+    }
     
     func disableNewCollectionButton(isDisabled: Bool) {
         self.newCollectionButton.isHidden = isDisabled
@@ -131,13 +132,26 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     
     // Adds a new `Photo` to the end of the `pin`'s `photos` array
     func addPhoto(urlString: String) {
+        print(urlString)
+        /*
         let photo = Photo(context: dataController.viewContext)
-        if let url = URL(string: urlString) {
-           let imgData = NSData(contentsOf: url)
-           photo.image = Data(imgData!)
-           photo.pin = pin
-           try? dataController.viewContext.save()
-        }
+         
+         // create a queue from scratch
+         let downloadQueue = DispatchQueue(label: "download", attributes: [])
+
+          // call dispatch async to send a closure to the downloads queue
+          downloadQueue.async { () -> Void in
+         
+              if let url = URL(string: urlString) {
+                let imgData = NSData(contentsOf: url)
+                photo.image = Data(imgData!)
+                photo.pin = pin
+                try? dataController.viewContext.save()
+              }
+                 DispatchQueue.main.async(execute: { () -> Void in
+                     collectionView.reloadData()
+                 })
+       */
     }
 
     // Deletes the `Photo` at the specified index path
