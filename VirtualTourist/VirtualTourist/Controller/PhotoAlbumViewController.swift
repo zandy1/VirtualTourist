@@ -38,7 +38,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         let sortDescriptor = NSSortDescriptor(key: "image", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "\(pin)-photos")
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
 
         do {
@@ -88,7 +88,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     }
     
     func toDoWhenInView() {
-           collectionView.reloadData()
+           self.collectionView.reloadData()
            self.navigationController?.navigationBar.isHidden = false
     }
     
@@ -132,8 +132,8 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     
     // Adds a new `Photo` to the end of the `pin`'s `photos` array
     func addPhoto(urlString: String) {
-        print(urlString)
-        /*
+        //print(urlString)
+        
         let photo = Photo(context: dataController.viewContext)
          
          // create a queue from scratch
@@ -143,15 +143,16 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
           downloadQueue.async { () -> Void in
          
               if let url = URL(string: urlString) {
+                //print("Loading Image!")
                 let imgData = NSData(contentsOf: url)
                 photo.image = Data(imgData!)
-                photo.pin = pin
-                try? dataController.viewContext.save()
+                photo.pin = self.pin
+                try? self.dataController.viewContext.save()
               }
                  DispatchQueue.main.async(execute: { () -> Void in
-                     collectionView.reloadData()
+                    self.collectionView.reloadData()
                  })
-       */
+          }
     }
 
     // Deletes the `Photo` at the specified index path

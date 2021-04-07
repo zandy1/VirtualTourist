@@ -53,11 +53,14 @@
                                     <navigationItem id="EHk-Tm-zjn"/>
                                 </items>
                             </navigationBar>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Dcc-gU-0VT">
-                                <rect key="frame" x="0.0" y="88" width="414" height="778"/>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Dcc-gU-0VT">
+                                <rect key="frame" x="0.0" y="88" width="414" height="260"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="260" id="xEC-pE-BQQ"/>
+                                </constraints>
                             </mapView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="qCg-Aa-Xu3">
-                                <rect key="frame" x="-16" y="88" width="414" height="808"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="qCg-Aa-Xu3">
+                                <rect key="frame" x="0.0" y="348" width="414" height="502"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="c7b-ZM-3M0">
                                     <size key="itemSize" width="128" height="128"/>
@@ -96,14 +99,14 @@
                         <viewLayoutGuide key="safeArea" id="NTb-jP-0UX"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="qCg-Aa-Xu3" firstAttribute="trailing" secondItem="NTb-jP-0UX" secondAttribute="trailing" constant="-16" id="0x8-s4-DQH"/>
+                            <constraint firstItem="qCg-Aa-Xu3" firstAttribute="trailing" secondItem="NTb-jP-0UX" secondAttribute="trailing" id="0x8-s4-DQH"/>
                             <constraint firstItem="NTb-jP-0UX" firstAttribute="leading" secondItem="cgS-gK-GoT" secondAttribute="leading" id="2sY-s9-sJ8"/>
                             <constraint firstItem="ndi-Ix-0dc" firstAttribute="centerX" secondItem="NTb-jP-0UX" secondAttribute="centerX" id="3rv-gj-vxN"/>
-                            <constraint firstItem="qCg-Aa-Xu3" firstAttribute="leading" secondItem="NTb-jP-0UX" secondAttribute="leading" constant="-16" id="44Q-kR-6qH"/>
+                            <constraint firstItem="qCg-Aa-Xu3" firstAttribute="leading" secondItem="NTb-jP-0UX" secondAttribute="leading" id="44Q-kR-6qH"/>
                             <constraint firstItem="ndi-Ix-0dc" firstAttribute="bottom" secondItem="AWM-OG-hOA" secondAttribute="bottom" constant="-16" id="6AS-qV-TYu"/>
                             <constraint firstItem="cgS-gK-GoT" firstAttribute="trailing" secondItem="NTb-jP-0UX" secondAttribute="trailing" id="C8I-aI-3hG"/>
+                            <constraint firstItem="qCg-Aa-Xu3" firstAttribute="top" secondItem="Dcc-gU-0VT" secondAttribute="bottom" id="LE0-w1-LLH"/>
                             <constraint firstItem="Dcc-gU-0VT" firstAttribute="leading" secondItem="NTb-jP-0UX" secondAttribute="leading" id="X7r-dB-yea"/>
-                            <constraint firstItem="qCg-Aa-Xu3" firstAttribute="top" secondItem="Dcc-gU-0VT" secondAttribute="bottom" id="hHf-Ms-074"/>
                             <constraint firstItem="cgS-gK-GoT" firstAttribute="top" secondItem="NTb-jP-0UX" secondAttribute="top" id="kEu-gw-aWH"/>
                             <constraint firstItem="Dcc-gU-0VT" firstAttribute="trailing" secondItem="NTb-jP-0UX" secondAttribute="trailing" id="vV1-4p-wMa"/>
                             <constraint firstItem="ndi-Ix-0dc" firstAttribute="top" secondItem="qCg-Aa-Xu3" secondAttribute="bottom" id="yq9-KJ-Bng"/>
