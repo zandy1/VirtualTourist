@@ -33,6 +33,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     
     fileprivate func setupFetchedResultsController() {
         let fetchRequest:NSFetchRequest<Photo> = Photo.fetchRequest()
+
         let predicate = NSPredicate(format: "pin == %@", pin)
         fetchRequest.predicate = predicate
         let sortDescriptor = NSSortDescriptor(key: "image", ascending: true)
@@ -51,11 +52,14 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     override func viewDidLoad() {
           super.viewDidLoad()
           self.myNavigationItem.leftBarButtonItem = UIBarButtonItem(title: "< OK", style: .done, target: self, action: #selector(ok))
+          self.myNavigationItem.rightBarButtonItem = UIBarButtonItem(title: "", style: .done, target: self, action: #selector(dummy))
           toDoWhenInView()
           mapView.delegate = self
           collectionView.dataSource = self
           collectionView.delegate = self
-
+          collectionView.allowsSelection = true
+          collectionView.allowsMultipleSelection = false
+        
           // Do any additional setup after loading the view.
           //display
           let space:CGFloat = 1.0
@@ -70,6 +74,10 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
           if (pin.photo?.count == 0) {
               print("Pin Contains No Photos")
               getFlickrImages(page: 1)
+          }
+          else {
+            restoreFlickrParams()
+            disableNewCollectionButton(isDisabled: false)
           }
     }
     
@@ -87,6 +95,10 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         self.dismiss(animated: true, completion: nil)
     }
     
+    @objc func dummy() {
+        
+    }
+    
     func toDoWhenInView() {
            self.collectionView.reloadData()
            self.navigationController?.navigationBar.isHidden = false
@@ -98,6 +110,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     
     
     func getFlickrImages(page: Int) {
+        disableNewCollectionButton(isDisabled: true)
         FlickrAPI.searchPhotos(latitude: pin.latitude, longitude: pin.longitude, page: page, completion: self.handleGetFlickrImages(response:error:))
     }
      
@@ -107,12 +120,16 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
          numPages = response!.photos.pages
          imagesPerPage = response!.photos.perpage
          imagesAvailable = Int(response!.photos.total)
+         saveFlickrParams()
          if (imagesAvailable > 0) {
             downloadImages()
             for image in response!.photos.photo {
                 addPhoto(urlString: image.computeURL())
             }
             disableNewCollectionButton(isDisabled: false)
+         }
+         else {
+            noImagesFound()
          }
        }
        else {
@@ -162,10 +179,40 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         try? dataController.viewContext.save()
     }
     
+    @objc func deleteCell() {
+        if let cellToDelete = collectionView.indexPathsForSelectedItems {
+            for index in cellToDelete {
+                deletePhoto(at: index)
+                collectionView.deleteItems(at: cellToDelete)
+            }
+            self.collectionView.reloadData()
+        }
+    }
+    
     func showFailure(failureType: String, message: String) {
         let alertVC = UIAlertController(title: failureType, message: message, preferredStyle: .alert)
          alertVC.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
          self.present(alertVC, animated:true)
+    }
+    
+    func noImagesFound() {
+        let alertVC = UIAlertController(title: "", message: "No Images Found For This Location", preferredStyle: .alert)
+         alertVC.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+         self.present(alertVC, animated:true)
+    }
+    
+    func saveFlickrParams() {
+        UserDefaults.standard.set(currentPage, forKey: "CurrentPage")
+        UserDefaults.standard.set(numPages, forKey: "NumPages")
+        UserDefaults.standard.set(imagesPerPage, forKey: "ImagesPerPage")
+        UserDefaults.standard.set(imagesAvailable, forKey: "ImagesAvailable")
+    }
+    
+    func restoreFlickrParams() {
+        let currentPage = UserDefaults.standard.integer(forKey: "CurrentPage")
+        let numPages = UserDefaults.standard.integer(forKey: "NumPages")
+        let imagesPerPage = UserDefaults.standard.integer(forKey: "ImagesPerPage")
+        let imagesAvailable = UserDefaults.standard.integer(forKey: "ImagesAvailable")
     }
 
     func drawMap() {
@@ -237,7 +284,11 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-            
+        self.myNavigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "trash"), style: .done, target: self, action: #selector(deleteCell))
+        }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        self.myNavigationItem.rightBarButtonItem = UIBarButtonItem(title: "", style: .done, target: self, action: #selector(dummy))
         }
 
     
