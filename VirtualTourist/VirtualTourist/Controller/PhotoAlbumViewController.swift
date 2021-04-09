@@ -33,10 +33,9 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     
     fileprivate func setupFetchedResultsController() {
         let fetchRequest:NSFetchRequest<Photo> = Photo.fetchRequest()
-
         let predicate = NSPredicate(format: "pin == %@", pin)
         fetchRequest.predicate = predicate
-        let sortDescriptor = NSSortDescriptor(key: "image", ascending: true)
+        let sortDescriptor = NSSortDescriptor(key: "image", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
@@ -100,7 +99,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     }
     
     func toDoWhenInView() {
-           self.collectionView.reloadData()
+           //self.collectionView.reloadData()
            self.navigationController?.navigationBar.isHidden = false
     }
     
@@ -121,6 +120,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
          imagesPerPage = response!.photos.perpage
          imagesAvailable = Int(response!.photos.total)
          saveFlickrParams()
+         print(imagesAvailable)
          if (imagesAvailable > 0) {
             downloadImages()
             for image in response!.photos.photo {
@@ -139,6 +139,11 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     
     
     @IBAction func newCollectionTapped(_ sender: UIButton) {
+        for photos in fetchedResultsController.fetchedObjects! {
+            dataController.viewContext.delete(photos)
+        }
+        try? self.dataController.viewContext.save()
+        print(numPages)
         let randPage = Int.random(in: 1..<(numPages+1))
         getFlickrImages(page: randPage)
     }
@@ -149,7 +154,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     
     // Adds a new `Photo` to the end of the `pin`'s `photos` array
     func addPhoto(urlString: String) {
-        //print(urlString)
+        print(urlString)
         
         let photo = Photo(context: dataController.viewContext)
          
@@ -183,7 +188,6 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         if let cellToDelete = collectionView.indexPathsForSelectedItems {
             for index in cellToDelete {
                 deletePhoto(at: index)
-                collectionView.deleteItems(at: cellToDelete)
             }
             self.collectionView.reloadData()
         }
@@ -270,8 +274,17 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
 
     // MARK: UICollectionViewDataSource
 
+    func collectionView(_ collectionView: UICollectionView, numberOfSections section: Int) -> Int {
+        fetchedResultsController.sections?.count ?? 1
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fetchedResultsController.sections?[0].numberOfObjects ?? 0
+        guard let sections = self.fetchedResultsController.sections else {
+                fatalError("No sections in fetchedResultsController")
+            }
+         let sectionInfo = sections[section]
+        return sectionInfo.numberOfObjects
+        //return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -295,5 +308,28 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
 }
 
 extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate {
-    
+   
+     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+         switch type {
+         case .insert:
+             collectionView.insertItems(at: [newIndexPath!])
+             break
+         case .delete:
+             collectionView.deleteItems(at: [indexPath!])
+             break
+         default:
+             break
+         }
+     }
+ 
+     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+         let indexSet = IndexSet(integer: sectionIndex)
+         switch type {
+         case .insert: collectionView.insertSections(indexSet)
+         case .delete: collectionView.deleteSections(indexSet)
+         default:
+              break
+         }
+     }
+  
 }

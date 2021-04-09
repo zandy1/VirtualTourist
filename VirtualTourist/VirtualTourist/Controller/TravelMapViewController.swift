@@ -58,6 +58,16 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
         drawMap()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupFetchedResultsController()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        fetchedResultsController = nil
+    }
+    
     @objc func handleTap(gestureRecognizer: UILongPressGestureRecognizer) {
         let location = gestureRecognizer.location(in: mapView)
         let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
@@ -65,7 +75,7 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
         // Add annotation:
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
-        mapView.addAnnotation(annotation)
+        //mapView.addAnnotation(annotation)
         addPin(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude)
     }
     
@@ -75,6 +85,7 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
         pin.latitude = latitude
         pin.longitude = longitude
         try? dataController.viewContext.save()
+        drawMap()
     }
     
     // Restore Center and Zoom Level
@@ -147,7 +158,7 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
         let coordinate = view.annotation?.coordinate
         let lat = coordinate?.latitude
         let long = coordinate?.longitude
-        for pin in pins {
+        for pin in self.pins {
             if pin.latitude == lat && pin.longitude == long {
              selectedPin = pin
              //print(selectedPin.latitude, selectedPin.longitude)
