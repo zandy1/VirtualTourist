@@ -29,6 +29,8 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     var numPages: Int!
     var imagesPerPage: Int!
     var imagesAvailable: Int!
+    
+    //var flickrImages: [UIImage]!
 
     
     fileprivate func setupFetchedResultsController() {
@@ -120,12 +122,21 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
          imagesPerPage = response!.photos.perpage
          imagesAvailable = Int(response!.photos.total)
          saveFlickrParams()
-         print(imagesAvailable)
+         //print(imagesAvailable)
          if (imagesAvailable > 0) {
             downloadImages()
             for image in response!.photos.photo {
-                addPhoto(urlString: image.computeURL())
+                let photo = Photo(context: dataController.viewContext)
+                photo.image = nil
+                photo.url = image.computeURL()
+                photo.pin = self.pin
+                try? self.dataController.viewContext.save()
+                self.collectionView.reloadData()
             }
+            //flickrImages = []
+            //for image in response!.photos.photo {
+                //addPhoto(urlString: image.computeURL())
+            //}
             disableNewCollectionButton(isDisabled: false)
          }
          else {
@@ -151,32 +162,19 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     func disableNewCollectionButton(isDisabled: Bool) {
         self.newCollectionButton.isHidden = isDisabled
     }
-    
-    // Adds a new `Photo` to the end of the `pin`'s `photos` array
-    func addPhoto(urlString: String) {
+     
+    func addPhoto(urlString: String) -> Data? {
         print(urlString)
-        
-        let photo = Photo(context: dataController.viewContext)
-         
-         // create a queue from scratch
-         let downloadQueue = DispatchQueue(label: "download", attributes: [])
-
-          // call dispatch async to send a closure to the downloads queue
-          downloadQueue.async { () -> Void in
-         
-              if let url = URL(string: urlString) {
-                //print("Loading Image!")
-                let imgData = NSData(contentsOf: url)
-                photo.image = Data(imgData!)
-                photo.pin = self.pin
-                try? self.dataController.viewContext.save()
-              }
-                 DispatchQueue.main.async(execute: { () -> Void in
-                    self.collectionView.reloadData()
-                 })
-          }
+        let url = URL(string: urlString)
+        guard let imageData = try? Data(contentsOf: url!) else {
+            return(nil)
+        }
+        DispatchQueue.main.async {
+        var downloadedImage: UIImage? { UIImage(data: imageData) }
+        }
+        return(imageData)
     }
-
+       
     // Deletes the `Photo` at the specified index path
     func deletePhoto(at indexPath: IndexPath) {
         let photoToDelete = fetchedResultsController.object(at: indexPath)
@@ -290,7 +288,13 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let aPhoto = fetchedResultsController.object(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoAlbumCollectionViewCell", for: indexPath) as! PhotoAlbumCollectionViewCell
-        
+        if (aPhoto.image == nil) {
+            print("Need To Download Image")
+            cell.spinner.startAnimating()
+            aPhoto.image = addPhoto(urlString: aPhoto.url!)
+            //try? self.dataController.viewContext.save()
+            cell.spinner.stopAnimating()
+        }
         // image
         cell.photoAlbumImageView.image = UIImage(data: aPhoto.image!)
         return cell
@@ -317,6 +321,8 @@ extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate {
          case .delete:
              collectionView.deleteItems(at: [indexPath!])
              break
+         case .update:
+            collectionView.reloadData()
          default:
              break
          }
@@ -327,6 +333,7 @@ extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate {
          switch type {
          case .insert: collectionView.insertSections(indexSet)
          case .delete: collectionView.deleteSections(indexSet)
+         case .update: collectionView.reloadData()
          default:
               break
          }
