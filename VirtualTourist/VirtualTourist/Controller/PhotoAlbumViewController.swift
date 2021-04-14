@@ -35,7 +35,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
         let predicate = NSPredicate(format: "pin == %@", pin)
         fetchRequest.predicate = predicate
         let sortDescriptor = NSSortDescriptor(key: "image", ascending: false)
-        fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchRequest.sortDescriptors = []
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
@@ -72,6 +72,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
               print("Pin Contains No Photos")
               disableNewCollectionButton(isDisabled: true)
               getFlickrImages(page: 1)
+              collectionView.reloadData()
           }
           else {
             restoreFlickrParams()
@@ -131,6 +132,8 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
                     photo.url = image.computeURL()
                     photo.image = nil
                     photo.pin = self.pin
+                    try? dataController.viewContext.save()
+                    //collectionView.reloadData()
                 }
                 //collectionView.reloadData()
              }
@@ -265,7 +268,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
             }
          let sectionInfo = sections[section]
         //return sectionInfo.numberOfObjects
-        return fetchedResultsController.sections?[0].numberOfObjects ?? 0
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -281,11 +284,13 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
                   //completion(false,error)
               }
               else {
+                DispatchQueue.main.async {
                 aPhoto.image = data
                 cell.photoAlbumImageView.image = UIImage(data: aPhoto.image!)
                 try? self.dataController.viewContext.save()
                 cell.spinner.stopAnimating()
                 self.disableNewCollectionButton(isDisabled: false)
+                }
               }
             }
         }
@@ -306,6 +311,11 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
 }
 
 extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate {
+
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+            collectionView.reloadData()
+        }
+     
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
              switch type {
@@ -322,19 +332,23 @@ extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate {
                  break
              }
          }
-     
+
          func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
              let indexSet = IndexSet(integer: sectionIndex)
              switch type {
-             case .insert: collectionView.insertSections(indexSet)
+             case .insert:
+             collectionView.insertSections(indexSet)
              break
-             case .delete: collectionView.deleteSections(indexSet)
+             case .delete:
+             collectionView.deleteSections(indexSet)
              break
-             case .update: collectionView.reloadData()
+             case .update:
+             collectionView.reloadData()
              break
              default:
                   break
              }
          }
- 
+
 }
+

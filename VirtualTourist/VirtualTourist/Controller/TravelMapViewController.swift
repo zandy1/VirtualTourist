@@ -31,7 +31,7 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
         let sortDescriptor = NSSortDescriptor(key: "latitude", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "pins")
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
         do {
             try fetchedResultsController.performFetch()
@@ -69,6 +69,9 @@ class TravelMapViewController: UIViewController, MKMapViewDelegate, UIGestureRec
     }
     
     @objc func handleTap(gestureRecognizer: UILongPressGestureRecognizer) {
+        if gestureRecognizer.state != .began {
+           return
+        }
         let location = gestureRecognizer.location(in: mapView)
         let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
         

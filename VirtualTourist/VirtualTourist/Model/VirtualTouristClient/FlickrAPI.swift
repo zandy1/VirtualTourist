@@ -21,7 +21,9 @@ class FlickrAPI {
         var stringValue: String {
         switch self {
         
-        case .searchPhotos(let lat, let lon, let page): return base + key + "&lat=" + lat + "&lon=" + lon + "&per_page=2" + "&page=" + page + trailer
+        //case .searchPhotos(let lat, let lon, let page): return base + key + "&lat=" + lat + "&lon=" + lon + "&per_page=3" + "&page=" + page + trailer
+        //}
+        case .searchPhotos(let lat, let lon, let page): return base + key + "&lat=" + lat + "&lon=" + lon + "&page=" + page + trailer
         }
       }
     
