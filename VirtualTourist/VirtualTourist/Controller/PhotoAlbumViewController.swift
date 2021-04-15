@@ -30,6 +30,10 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     var imagesPerPage: Int!
     var imagesAvailable: Int!
     
+    var randPage: Int!
+    
+    var useNumPages: Bool!
+    
     fileprivate func setupFetchedResultsController() {
         let fetchRequest:NSFetchRequest<Photo> = Photo.fetchRequest()
         let predicate = NSPredicate(format: "pin == %@", pin)
@@ -72,12 +76,10 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
               print("Pin Contains No Photos")
               disableNewCollectionButton(isDisabled: true)
               getFlickrImages(page: 1)
-              collectionView.reloadData()
           }
           else {
             restoreFlickrParams()
-            collectionView.reloadData()
-            disableNewCollectionButton(isDisabled: true)
+            disableNewCollectionButton(isDisabled: false)
           }
     }
     
@@ -100,7 +102,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     }
     
     func toDoWhenInView() {
-           //self.collectionView.reloadData()
+           useNumPages = false
            self.navigationController?.navigationBar.isHidden = false
     }
     
@@ -126,6 +128,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
              imagesPerPage = response!.photos.perpage
              imagesAvailable = Int(response!.photos.total)
              saveFlickrParams()
+             useNumPages = true
              if (imagesAvailable > 0) {
                 for image in response!.photos.photo {
                     let photo = Photo(context: dataController.viewContext)
@@ -133,9 +136,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
                     photo.image = nil
                     photo.pin = self.pin
                     try? dataController.viewContext.save()
-                    //collectionView.reloadData()
                 }
-                //collectionView.reloadData()
              }
              else {
                 noImagesFound()
@@ -147,11 +148,44 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
          }
     
     @IBAction func newCollectionTapped(_ sender: UIButton) {
-        for photos in fetchedResultsController.fetchedObjects! {
-            dataController.viewContext.delete(photos)
+        let ReqVar = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
+        let DelAllReqVar = NSBatchDeleteRequest(fetchRequest: ReqVar)
+        do {
+
+             // Execute the Batch Delete Request
+            try dataController.viewContext.execute(DelAllReqVar)
+
+            // Reset the Managed Object Context
+            //dataController.viewContext.reset()
+
+            // try self.fetchedResultsController.performFetch()
+            // If you have a Table View? Use this function
+            //self.collectionView.reloadData()
+            try? self.dataController.viewContext.save()
+            //DispatchQueue.main.async {
+                //self.collectionView.reloadData()
+            //}
+            } catch {
+                // Error
+                print("ERROR")
+            }
+        //for photos in fetchedResultsController.fetchedObjects! {
+            //dataController.viewContext.delete(photos)
+            //self.collectionView.reloadData()
+            //try? self.dataController.viewContext.save()
+        //}
+        //try? self.dataController.viewContext.save()
+        //DispatchQueue.main.async {
+            //self.collectionView.reloadData()
+        //}
+
+        if useNumPages {
+           randPage = Int.random(in: 1..<(numPages+1))
         }
-        try? self.dataController.viewContext.save()
-        let randPage = Int.random(in: 1..<(numPages+1))
+        else {
+            randPage = Int.random(in: 1...10)
+        }
+        disableNewCollectionButton(isDisabled: true)
         getFlickrImages(page: randPage)
     }
     
@@ -278,6 +312,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
             print("Need To Download Image")
             self.disableNewCollectionButton(isDisabled: true)
             cell.spinner.startAnimating()
+            if aPhoto.url != nil {
             let url = URL(string: aPhoto.url!)
             FlickrAPI.getData(from: url!) { data, response, error in
               if error != nil { // Handle error…
@@ -292,6 +327,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
                 self.disableNewCollectionButton(isDisabled: false)
                 }
               }
+            }
             }
         }
         else {
@@ -323,10 +359,13 @@ extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate {
                  collectionView.insertItems(at: [newIndexPath!])
                  break
              case .delete:
-                collectionView.deleteItems(at: [indexPath!])
+                 collectionView.deleteItems(at: [indexPath!])
                  break
              case .update:
-                collectionView.reloadData()
+                //collectionView.reloadData()
+                break
+             case .move:
+                //collectionView.moveItem(at: indexPath!, to: newIndexPath!)
                 break
              default:
                  break
@@ -343,7 +382,7 @@ extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate {
              collectionView.deleteSections(indexSet)
              break
              case .update:
-             collectionView.reloadData()
+             //collectionView.reloadData()
              break
              default:
                   break
