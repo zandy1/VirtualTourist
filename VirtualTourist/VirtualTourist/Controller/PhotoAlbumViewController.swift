@@ -148,6 +148,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
          }
     
     @IBAction func newCollectionTapped(_ sender: UIButton) {
+        
         let ReqVar = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
         let DelAllReqVar = NSBatchDeleteRequest(fetchRequest: ReqVar)
         do {
@@ -159,16 +160,15 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
             //dataController.viewContext.reset()
 
             // try self.fetchedResultsController.performFetch()
-            // If you have a Table View? Use this function
-            //self.collectionView.reloadData()
             try? self.dataController.viewContext.save()
-            //DispatchQueue.main.async {
-                //self.collectionView.reloadData()
-            //}
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
             } catch {
                 // Error
                 print("ERROR")
             }
+        
         //for photos in fetchedResultsController.fetchedObjects! {
             //dataController.viewContext.delete(photos)
             //self.collectionView.reloadData()
@@ -376,10 +376,10 @@ extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate {
              let indexSet = IndexSet(integer: sectionIndex)
              switch type {
              case .insert:
-             collectionView.insertSections(indexSet)
+             //collectionView.insertSections(indexSet)
              break
              case .delete:
-             collectionView.deleteSections(indexSet)
+             //collectionView.deleteSections(indexSet)
              break
              case .update:
              //collectionView.reloadData()
