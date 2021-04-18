@@ -21,10 +21,10 @@ class FlickrAPI {
         var stringValue: String {
         switch self {
         
-        case .searchPhotos(let lat, let lon, let page): return base + key + "&lat=" + lat + "&lon=" + lon + "&per_page=50" + "&page=" + page + trailer
-        }
-        //case .searchPhotos(let lat, let lon, let page): return base + key + "&lat=" + lat + "&lon=" + lon + "&page=" + page + trailer
+        //case .searchPhotos(let lat, let lon, let page): return base + key + "&lat=" + lat + "&lon=" + lon + "&per_page=10" + "&page=" + page + trailer
         //}
+        case .searchPhotos(let lat, let lon, let page): return base + key + "&lat=" + lat + "&lon=" + lon + "&page=" + page + trailer
+        }
       }
     
       var url: URL {
@@ -44,8 +44,6 @@ class FlickrAPI {
                    }
                    return
                }
-            //print(url)
-            //print(String(data: data, encoding: .utf8))
             let decoder = JSONDecoder()
                do {
                 let responseObject = try decoder.decode(ResponseType.self, from: data)

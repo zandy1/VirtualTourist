@@ -149,36 +149,17 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
     
     @IBAction func newCollectionTapped(_ sender: UIButton) {
         
-        let ReqVar = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
-        let DelAllReqVar = NSBatchDeleteRequest(fetchRequest: ReqVar)
-        do {
-
-             // Execute the Batch Delete Request
-            try dataController.viewContext.execute(DelAllReqVar)
-
-            // Reset the Managed Object Context
-            //dataController.viewContext.reset()
-
-            // try self.fetchedResultsController.performFetch()
+        for photo in self.fetchedResultsController.fetchedObjects! {
+            dataController.viewContext.delete(photo)
+        }
+        self.self.dataController.viewContext.performAndWait{
             try? self.dataController.viewContext.save()
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
-            } catch {
-                // Error
-                print("ERROR")
-            }
-        
-        //for photos in fetchedResultsController.fetchedObjects! {
-            //dataController.viewContext.delete(photos)
-            //self.collectionView.reloadData()
-            //try? self.dataController.viewContext.save()
-        //}
-        //try? self.dataController.viewContext.save()
-        //DispatchQueue.main.async {
-            //self.collectionView.reloadData()
-        //}
+        }
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
 
+        // If this is for a new photo we can use numPages
         if useNumPages {
            randPage = Int.random(in: 1..<(numPages+1))
         }
@@ -314,6 +295,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, UICollectio
             cell.spinner.startAnimating()
             if aPhoto.url != nil {
             let url = URL(string: aPhoto.url!)
+            cell.photoAlbumImageView.image = nil
             FlickrAPI.getData(from: url!) { data, response, error in
               if error != nil { // Handle error…
                   //completion(false,error)
@@ -352,7 +334,7 @@ extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate {
             collectionView.reloadData()
         }
      
-    
+    /*
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
              switch type {
              case .insert:
@@ -388,6 +370,7 @@ extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate {
                   break
              }
          }
+ 
+ */
 
 }
-
